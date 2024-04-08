@@ -10,6 +10,26 @@ Resources:
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/webhook.webhook
+      Runtime: nodejs18.x
+      Description: Webhook to receive updates from the Telegram bot API
+      # Increase the RAM to also increase CPU quota. 1769 MB equals 1 full vCPU
+      MemorySize: 256
+      # HttpApi maximum timeout is 30 sec so the lambda timeout must be < 30
+      Timeout: 29
+      Environment:
+        Variables:
+          NODE_ENV: production
+      Events:
+        Webhook:
+          Type: HttpApi # Api also works, but HttpApi is simpler & faster
+          Properties:
+            Path: /webhook
+            Method: POST
+  
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllItemsFunction:
     Type: AWS::Serverless::Function
@@ -112,6 +132,11 @@ Outputs:
   WebEndpoint:
     Description: API Gateway endpoint URL for Prod stage
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  WebhookApi:
+    Description: 'HTTP API endpoint URL for Telegram webhook'
+    # Below assumes you are using the HttpApi event type, adjust accordingly if using Api
+    Value: !Sub 'https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/webhook'
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
