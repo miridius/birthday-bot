@@ -12,8 +12,8 @@ dependencies:
     specifier: ^3.188.0
     version: 3.549.0(@aws-sdk/client-dynamodb@3.549.0)
   serverless-telegram:
-    specifier: ^0.8.1
-    version: 0.8.1
+    specifier: ^0.8.2
+    version: 0.8.2
 
 devDependencies:
   aws-sdk-client-mock:
@@ -3085,8 +3085,8 @@ packages:
       lru-cache: 6.0.0
     dev: true
 
-  /serverless-telegram@0.8.1:
-    resolution: {integrity: sha512-PjWVl1DJiV9ay02GORaRAPtJg7bgv1pexOlPGOcasOSDsM58nZhvGqoy5HU9xvKnwgbYstjbrqgcpLxORQNOsw==}
+  /serverless-telegram@0.8.2:
+    resolution: {integrity: sha512-3wns+xrsmScxxYJ9f3hePrkYeYWjw0rx98HiJ3BHX8ld1vREsBlfEcdYOMqz9x4mz0Ik48Vcracv/zntPCvUOw==}
     engines: {node: ^16 || ^18 || ^20}
     hasBin: true
     dependencies:

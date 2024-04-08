@@ -6,7 +6,7 @@
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.188.0",
         "@aws-sdk/lib-dynamodb": "^3.188.0",
-        "serverless-telegram": "^0.8.1"
+        "serverless-telegram": "^0.8.2"
     },
     "devDependencies": {
         "aws-sdk-client-mock": "^2.0.0",
