@@ -135,6 +135,8 @@ export const webhook = createAwsTelegramWebhook(async (msg) => {
       } else {
         return 'unknown command: ' + command;
       }
+    } else {
+      return msg.text && `You said: ${msg.text}`;
     }
   } catch (error) {
     return 'something went wrong: ' + error + '\n' + error.stack;
