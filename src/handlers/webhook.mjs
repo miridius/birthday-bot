@@ -5,7 +5,7 @@ import {
   SchedulerClient,
   UpdateScheduleCommand,
 } from '@aws-sdk/client-scheduler';
-import { createAwsTelegramWebhook } from 'serverless-telegram';
+import { callTgApi, createAwsTelegramWebhook } from 'serverless-telegram';
 
 const client = new SchedulerClient({});
 
@@ -77,14 +77,13 @@ const updateBirthdaySchedule = async (
   );
 };
 
-const setBirthday = async (
+const setbirthday = async (
   /** @type {import('serverless-telegram').Message} */ { from, chat },
   /** @type {string} */ dateStr,
 ) => {
-  let date = undefined;
-  try {
-    date = new Date(dateStr);
-  } catch (err) {
+  const date = new Date(dateStr);
+  // @ts-ignore
+  if (date == 'Invalid Date') {
     return 'invalid date. Please use ISO format including UTC offset';
   }
   const schedule = await getBirthdaySchedule(from);
@@ -100,18 +99,19 @@ const setBirthday = async (
   }
 };
 
-const getBirthday = async (
+const getbirthday = async (
   /** @type {import('serverless-telegram').Message} */ { from },
 ) => {
   const schedule = await getBirthdaySchedule(from);
   if (schedule) {
+    console.log('got schedule:', schedule);
     return 'Your birthday is: ' + schedule.Description;
   } else {
     return 'Your birthday is not set, please use /setBirthday first';
   }
 };
 
-const addChat = async ({ from, chat }) => {
+const addchat = async ({ from, chat }) => {
   const schedule = await getBirthdaySchedule(from.id);
   if (schedule) {
     const input = JSON.parse(schedule.Target.Input);
@@ -141,26 +141,35 @@ const removeChat = async ({ from, chat }) => {
   }
 };
 
-const handlers = { setBirthday, getBirthday, addChat, removeChat };
+const handlers = { setbirthday, getbirthday, addchat, removeChat };
 
 export const webhook = createAwsTelegramWebhook(async (msg) => {
-  try {
-    if (msg.text?.startsWith('/')) {
-      const [command, ...args] = msg.text.split(' ');
-      const handler = handlers[command.substring(1)];
-      if (handler) {
-        return await handler(msg, ...args);
-      } else {
-        return 'unknown command: ' + command;
-      }
+  if (msg.text?.startsWith('/')) {
+    const [command, ...args] = msg.text.split(' ');
+    const handler = handlers[command.substring(1)];
+    if (handler) {
+      return await handler(msg, ...args);
     } else {
-      return msg.text && `You said: ${msg.text}`;
+      return 'unknown command: ' + command;
     }
-  } catch (error) {
-    return 'something went wrong: ' + error + '\n' + error.stack;
   }
 }, 60764253);
 
-export const handleSchedule = (/** @type {any} */ event) => {
-  console.log('scheduled event:', event);
-};
+const userHandle = (/** @type {import('serverless-telegram').User} */ user) =>
+  user.first_name + (user.username ? ` @${user.username}` : '');
+
+export const handleSchedule = async (
+  /** @type {{user: import('serverless-telegram').User, chatIds: [number]}} */ {
+    user,
+    chatIds,
+  },
+) =>
+  Promise.all(
+    chatIds.map((chatId) =>
+      callTgApi({
+        method: 'sendMessage',
+        chat_id: chatId,
+        text: `🎂 Happy birthday ${userHandle(user)}! 🎉`,
+      }),
+    ),
+  );

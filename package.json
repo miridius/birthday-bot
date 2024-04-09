@@ -1,20 +1,20 @@
 {
-    "name": "delete-test-01",
-    "description": "delete-test-01-description",
+    "name": "birthday-bot",
+    "description": "A telegram bot that sends a message on people's birthdays",
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "@aws-sdk/client-dynamodb": "^3.188.0",
         "@aws-sdk/client-scheduler": "^3.549.0",
-        "@aws-sdk/lib-dynamodb": "^3.188.0",
-        "serverless-telegram": "^0.8.2"
+        "serverless-telegram": "^0.8.3"
     },
     "devDependencies": {
         "aws-sdk-client-mock": "^2.0.0",
+        "env-cmd": "^10.1.0",
         "jest": "^29.2.1"
     },
     "scripts": {
-        "deploy": "sam build && sam validate && sam deploy && sam logs -t",
+        "build+deploy": "sam build && sam validate && env-cmd pnpm sam-deploy && sam logs -t",
+        "sam-deploy": "sam deploy --parameter-overrides BotApiToken=$BOT_API_TOKEN",
         "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
     },
     "jest": {
