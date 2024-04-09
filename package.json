@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.188.0",
+        "@aws-sdk/client-scheduler": "^3.549.0",
         "@aws-sdk/lib-dynamodb": "^3.188.0",
         "serverless-telegram": "^0.8.2"
     },

@@ -23,12 +23,28 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
+          SCHEDULE_LAMBDA_ARN: !GetAtt ScheduledEventFunction.Arn
+          SCHEDULE_LAMBDA_ROLE_ARN: !GetAtt ScheduledEventFunction.Role
       Events:
         Webhook:
           Type: HttpApi # Api also works, but HttpApi is simpler & faster
           Properties:
             Path: /webhook
             Method: POST
+
+  ScheduledEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/webhook.handleSchedule
+      Runtime: nodejs18.x
+      Description: Function to received scheduled birthday events
+      # Increase the RAM to also increase CPU quota. 1769 MB equals 1 full vCPU
+      MemorySize: 256
+      # HttpApi maximum timeout is 30 sec so the lambda timeout must be < 30
+      Timeout: 29
+      Environment:
+        Variables:
+          NODE_ENV: production
   
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllItemsFunction:
