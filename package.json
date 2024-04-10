@@ -4,6 +4,7 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
+        "@aws-sdk/client-bedrock-runtime": "^3.552.0",
         "@aws-sdk/client-scheduler": "^3.549.0",
         "serverless-telegram": "^0.8.3"
     },

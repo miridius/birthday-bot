@@ -43,11 +43,15 @@ Resources:
             - Effect: Allow
               Action:
                 - scheduler:*
-              Resource: 'arn:aws:scheduler:eu-west-2:192461062174:schedule/default/*'
+              Resource: 'arn:aws:scheduler:*:*:schedule/default/*'
             - Effect: Allow
               Action:
                 - iam:PassRole
               Resource: !GetAtt LambdaExecuteRole.Arn
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: 'arn:aws:bedrock:*::foundation-model/*'
 
   ScheduledEventFunction:
     Type: AWS::Serverless::Function
