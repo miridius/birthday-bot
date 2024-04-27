@@ -12,6 +12,8 @@ import {
 } from '@aws-sdk/client-scheduler';
 import { callTgApi, createAwsTelegramWebhook } from 'serverless-telegram';
 
+const errorChatId = 60764253;
+
 const schedulerClient = new SchedulerClient({});
 
 const bedrockClient = new BedrockRuntimeClient({ region: 'eu-central-1' });
@@ -253,14 +255,29 @@ export const handleSchedule = async (
   },
 ) =>
   Promise.all(
-    chatIds.map((chatId) =>
-      callTgApi({
-        method: 'sendMessage',
-        chat_id: chatId,
-        text: generateBirthdayMessage(user.first_name, getAge(year)),
-      }),
+    chatIds.map(
+      async (chatId) =>
+        await callTgApi({
+          method: 'sendMessage',
+          chat_id: chatId,
+          text: await generateBirthdayMessage(user.first_name, getAge(year)),
+        }),
     ),
-  );
+  ).catch((err) => {
+    let message = `Bot Error while handling schedule: ${{
+      user,
+      chatIds,
+      year,
+    }}`;
+    // since the error won't be thrown we add the stack trace to the logs
+    message += `\n\n${err?.stack || err}`;
+    console.error(message);
+    return callTgApi({
+      method: 'sendMessage',
+      chat_id: errorChatId,
+      text: message,
+    });
+  });
 
 const announce = (
   /** @type {import('serverless-telegram').Message} */ { from },
@@ -288,4 +305,4 @@ export const webhook = createAwsTelegramWebhook(async (msg) => {
       return 'unknown command: ' + command;
     }
   }
-}, 60764253);
+}, errorChatId);

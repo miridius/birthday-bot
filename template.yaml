@@ -67,6 +67,13 @@ Resources:
         Variables:
           NODE_ENV: production
           BOT_API_TOKEN: !Ref BotApiToken
+      Policies:
+        - Version: '2012-10-17' 
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: 'arn:aws:bedrock:*::foundation-model/*'
 
   LambdaExecuteRole:
     Type: AWS::IAM::Role
