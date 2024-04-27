@@ -183,7 +183,7 @@ const generate = async (/** @type {string} */ prompt) => {
       textGenerationConfig: {
         maxTokenCount: 128,
         stopSequences: [],
-        temperature: 0,
+        temperature: 1,
         topP: 1,
       },
     }),
