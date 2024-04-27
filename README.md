@@ -27,6 +27,8 @@ Test message generation in the live bot using the secret /announce command
 
 ## TODO
 
-- [ ] list birthdays command
+- [x] list birthdays command
 - [ ] use local time zone in schedule (specify timezone in setbirthday, allow changing it)
 - [ ] investigate strange `{}` messages in bbg channel
+- [ ] let chat admins set someone's birthday
+- [ ] separate birthday per chat?

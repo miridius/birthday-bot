@@ -43,7 +43,7 @@ Resources:
             - Effect: Allow
               Action:
                 - scheduler:*
-              Resource: 'arn:aws:scheduler:*:*:schedule/default/*'
+              Resource: 'arn:aws:scheduler:*:*:schedule/*/*'
             - Effect: Allow
               Action:
                 - iam:PassRole

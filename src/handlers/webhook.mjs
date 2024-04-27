@@ -5,6 +5,7 @@ import {
 import {
   CreateScheduleCommand,
   GetScheduleCommand,
+  ListSchedulesCommand,
   ResourceNotFoundException,
   SchedulerClient,
   UpdateScheduleCommand,
@@ -140,6 +141,33 @@ const getbirthday = async (
   }
 };
 
+const listbirthdays = async (
+  /** @type {import('serverless-telegram').Message} */ { chat },
+) => {
+  const ids = (
+    await schedulerClient.send(
+      new ListSchedulesCommand({ GroupName: 'default' }),
+    )
+  ).Schedules.map((s) => Number(s.Name));
+
+  const schedules = await Promise.all(
+    // @ts-ignore
+    ids.map((id) => getBirthdaySchedule({ id })),
+  );
+
+  let lines = schedules
+    .map((s) => {
+      const { user, chatIds } = JSON.parse(s.Target.Input);
+      return (
+        (chat.id == 60764253 || chatIds.includes(chat.id)) &&
+        `- ${user.first_name}: ${s.Description}`
+      );
+    })
+    .filter((x) => x);
+  lines.sort();
+  return lines.join('\n');
+};
+
 const addchat = async (
   /** @type {import('serverless-telegram').Message} */ { from, chat },
 ) => {
@@ -244,6 +272,7 @@ const commands = {
   start,
   setbirthday,
   getbirthday,
+  listbirthdays,
   addchat,
   removechat,
   announce,
