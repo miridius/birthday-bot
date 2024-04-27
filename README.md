@@ -24,3 +24,9 @@ Test message generation in the live bot using the secret /announce command
 ## Deploy
 
 `pnpm build+deploy`
+
+## TODO
+
+- [ ] list birthdays command
+- [ ] use local time zone in schedule (specify timezone in setbirthday, allow changing it)
+- [ ] investigate strange `{}` messages in bbg channel
