@@ -19,7 +19,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/webhook.webhook
-      Runtime: nodejs18.x
+      Runtime: nodejs22.x
       Description: Webhook to receive updates from the Telegram bot API
       # Increase the RAM to also increase CPU quota. 1769 MB equals 1 full vCPU
       MemorySize: 256
@@ -48,16 +48,12 @@ Resources:
               Action:
                 - iam:PassRole
               Resource: !GetAtt LambdaExecuteRole.Arn
-            - Effect: Allow
-              Action:
-                - bedrock:InvokeModel
-              Resource: 'arn:aws:bedrock:*::foundation-model/*'
 
   ScheduledEventFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/webhook.handleSchedule
-      Runtime: nodejs18.x
+      Runtime: nodejs22.x
       Description: Function to received scheduled birthday events
       # Increase the RAM to also increase CPU quota. 1769 MB equals 1 full vCPU
       MemorySize: 256
@@ -67,13 +63,6 @@ Resources:
         Variables:
           NODE_ENV: production
           BOT_API_TOKEN: !Ref BotApiToken
-      Policies:
-        - Version: '2012-10-17' 
-          Statement:
-            - Effect: Allow
-              Action:
-                - bedrock:InvokeModel
-              Resource: 'arn:aws:bedrock:*::foundation-model/*'
 
   LambdaExecuteRole:
     Type: AWS::IAM::Role

@@ -1,33 +1,33 @@
 {
-    "name": "birthday-bot",
-    "description": "A telegram bot that sends a message on people's birthdays",
-    "version": "0.0.1",
-    "private": true,
-    "dependencies": {
-        "@aws-sdk/client-bedrock-runtime": "^3.552.0",
-        "@aws-sdk/client-scheduler": "^3.549.0",
-        "serverless-telegram": "^0.8.3"
-    },
-    "devDependencies": {
-        "aws-sdk-client-mock": "^2.0.0",
-        "env-cmd": "^10.1.0",
-        "jest": "^29.2.1"
-    },
-    "scripts": {
-        "build+deploy": "sam build && sam validate && env-cmd pnpm sam-deploy && sam logs -t",
-        "sam-deploy": "sam deploy --parameter-overrides BotApiToken=$BOT_API_TOKEN",
-        "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
-    },
-    "jest": {
-        "testMatch": [
-            "**/__tests__/**/*.[jt]s?(x)",
-            "**/?(*.)+(spec|test).[jt]s?(x)",
-            "**/__tests__/**/*.mjs?(x)",
-            "**/?(*.)+(spec|test).mjs?(x)"
-        ],
-        "moduleFileExtensions": [
-            "mjs",
-            "js"
-        ]
-    }
+  "name": "birthday-bot",
+  "description": "A telegram bot that sends a message on people's birthdays",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-scheduler": "^3.971.0",
+    "serverless-telegram": "^0.8.3"
+  },
+  "devDependencies": {
+    "aws-sdk-client-mock": "^4.1.0",
+    "env-cmd": "^11.0.0",
+    "jest": "^30.2.0"
+  },
+  "scripts": {
+    "build+deploy": "sam build && sam validate && env-cmd pnpm sam-deploy && sam logs -t",
+    "sam-deploy": "sam deploy --parameter-overrides BotApiToken=$BOT_API_TOKEN",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "ncu": "pnpx npm-check-updates"
+  },
+  "jest": {
+    "testMatch": [
+      "**/__tests__/**/*.[jt]s?(x)",
+      "**/?(*.)+(spec|test).[jt]s?(x)",
+      "**/__tests__/**/*.mjs?(x)",
+      "**/?(*.)+(spec|test).mjs?(x)"
+    ],
+    "moduleFileExtensions": [
+      "mjs",
+      "js"
+    ]
+  }
 }

@@ -1,8 +1,4 @@
 import {
-  BedrockRuntimeClient,
-  InvokeModelCommand,
-} from '@aws-sdk/client-bedrock-runtime'; // ES Modules import
-import {
   CreateScheduleCommand,
   GetScheduleCommand,
   ListSchedulesCommand,
@@ -15,8 +11,6 @@ import { callTgApi, createAwsTelegramWebhook } from 'serverless-telegram';
 const errorChatId = 60764253;
 
 const schedulerClient = new SchedulerClient({});
-
-const bedrockClient = new BedrockRuntimeClient({ region: 'eu-central-1' });
 
 // Get the target function details from environment variables
 const Arn = process.env.SCHEDULE_LAMBDA_ARN || 'TODO';
@@ -206,43 +200,16 @@ const removechat = async (
   }
 };
 
-const generate = async (/** @type {string} */ prompt) => {
-  const input = {
-    body: JSON.stringify({
-      inputText: prompt,
-      textGenerationConfig: {
-        maxTokenCount: 128,
-        stopSequences: [],
-        temperature: 1,
-        topP: 1,
-      },
-    }),
-    contentType: 'application/json',
-    accept: 'application/json',
-    modelId: 'amazon.titan-text-express-v1',
-  };
-  const response = await bedrockClient.send(new InvokeModelCommand(input));
-  const results = JSON.parse(
-    Buffer.from(response.body).toString('utf-8'),
-  ).results;
-  console.log('results:', results);
-  const output = results?.[0]?.outputText;
-  return output
-    ?.split('\n')
-    .filter(
-      (/** @type {string} */ s) =>
-        !s.startsWith('Here is a') && !s.startsWith('#'),
-    )
-    .join('\n');
-};
+const ordinalIndicator = (/** @type {number} */ n) =>
+  (Math.floor((n % 100) / 10) !== 1 && ['th', 'st', 'nd', 'rd'][n % 10]) ||
+  'th';
+
 
 const generateBirthdayMessage = async (
   /** @type {string} */ name,
   /** @type {number} */ age,
-) =>
-  generate(
-    `Here is a short announcement that it's ${name}'s ${age}th birthday today, with some emojis:\n`,
-  ) || `🎂 Happy ${age}th birthday ${name}! 🎉`;
+) => `🎂 Happy ${age}${ordinalIndicator(age)} birthday, ${name}! 🎉`;
+
 
 const getAge = (/** @type {number} */ year) =>
   new Date().getUTCFullYear() - year;
