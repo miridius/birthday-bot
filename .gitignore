@@ -1,5 +1,9 @@
 node_modules
 .env
+.beads/
+.claude/
+.runtime/
+CLAUDE.md
 .aws-sam/build.toml
 .aws-sam/build/template.yaml
 .aws-sam/build/ScheduledEventFunction/buildspec.yml
