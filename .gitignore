@@ -20,3 +20,9 @@ node_modules
 .aws-sam/build/WebhookFunction/template.yaml
 .aws-sam/build/WebhookFunction/__tests__/unit/handlers/webhook.test.mjs
 .aws-sam/build/WebhookFunction/src/handlers/webhook.mjs
+
+# Gas Town runtime
+.beads/
+.claude/
+.runtime/
+CLAUDE.md
