@@ -11,16 +11,26 @@ const testUpdate = async (botUpdate, expectedResponse) => {
 };
 
 describe('webhook', function () {
-  it('responds to a simple text message', () => {
+  it('ignores a plain text message (non-command)', () => {
     return testUpdate(
       {
         update_id: 1,
         message: { chat: { id: 1 }, text: 'hi' },
       },
+      '',
+    );
+  });
+
+  it('replies with an error for an unknown command', () => {
+    return testUpdate(
+      {
+        update_id: 1,
+        message: { chat: { id: 1 }, text: '/nosuchcommand' },
+      },
       {
         method: 'sendMessage',
         chat_id: 1,
-        text: 'You said: hi',
+        text: 'unknown command: /nosuchcommand',
       },
     );
   });
