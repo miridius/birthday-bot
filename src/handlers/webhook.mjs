@@ -83,9 +83,14 @@ const updateBirthdaySchedule = async (
   /** @type {Partial<import("@aws-sdk/client-scheduler").UpdateScheduleCommandInput>} */ newData,
 ) => {
   return schedulerClient.send(
-    // @ts-ignore
     new UpdateScheduleCommand({
-      ...schedule,
+      Name: schedule.Name,
+      GroupName: schedule.GroupName,
+      Description: schedule.Description,
+      ScheduleExpression: schedule.ScheduleExpression,
+      ScheduleExpressionTimezone: schedule.ScheduleExpressionTimezone,
+      Target: schedule.Target,
+      FlexibleTimeWindow: schedule.FlexibleTimeWindow,
       ...newData,
       StartDate: new Date(),
     }),
@@ -215,13 +220,22 @@ const getAge = (/** @type {number} */ year) =>
   new Date().getUTCFullYear() - year;
 
 export const handleSchedule = async (
-  /** @type {{user: import('serverless-telegram').User, chatIds: [number], year: number}} */ {
-    user,
-    chatIds,
-    year,
-  },
-) =>
-  Promise.all(
+  /** @type {{user: import('serverless-telegram').User, chatIds: [number], year: number}} */ event,
+) => {
+  const { user, chatIds, year } = event ?? {};
+  console.log('handleSchedule invoked with:', JSON.stringify(event));
+
+  if (!user?.first_name || !Array.isArray(chatIds) || chatIds.length === 0 || !year) {
+    const message = `handleSchedule received invalid input: ${JSON.stringify(event)}`;
+    console.error(message);
+    return callTgApi({
+      method: 'sendMessage',
+      chat_id: errorChatId,
+      text: message,
+    });
+  }
+
+  return Promise.all(
     chatIds.map(
       async (chatId) =>
         await callTgApi({
@@ -231,11 +245,7 @@ export const handleSchedule = async (
         }),
     ),
   ).catch((err) => {
-    let message = `Bot Error while handling schedule: ${{
-      user,
-      chatIds,
-      year,
-    }}`;
+    let message = `Bot Error while handling schedule: ${JSON.stringify({ user, chatIds, year })}`;
     // since the error won't be thrown we add the stack trace to the logs
     message += `\n\n${err?.stack || err}`;
     console.error(message);
@@ -245,6 +255,7 @@ export const handleSchedule = async (
       text: message,
     });
   });
+};
 
 const announce = (
   /** @type {import('serverless-telegram').Message} */ { from },
