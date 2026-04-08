@@ -282,7 +282,5 @@ export const webhook = createAwsTelegramWebhook(async (msg) => {
     } else {
       return 'unknown command: ' + command;
     }
-  } else if (msg.text) {
-    return 'You said: ' + msg.text;
   }
 }, errorChatId);
